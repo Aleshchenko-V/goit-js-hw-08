@@ -7,19 +7,26 @@ const refs = {
 };
 
 const LOCALSTORAGE_KEY = 'feedback-form-state';
-const formValues = {
-  email: '',
-  message: '',
-};
+const formValues = {};
 
-document.addEventListener('DOMContentLoaded', setFormFields);
+setFormFields();
 refs.form.addEventListener('input', throttle(onInputHandler, 500));
 refs.form.addEventListener('submit', onSubmitHandler);
 
 function onInputHandler(e) {
   formValues[e.target.name] = e.target.value;
-  const stringifyData = JSON.stringify(formValues);
-  localStorage.setItem(LOCALSTORAGE_KEY, stringifyData);
+  try {
+    const localStorageData = localStorage.getItem(LOCALSTORAGE_KEY);
+    const parsedLocalStorageData = JSON.parse(localStorageData);
+    const stringifyData = JSON.stringify({
+      ...parsedLocalStorageData,
+      ...formValues,
+    });
+    localStorage.setItem(LOCALSTORAGE_KEY, stringifyData);
+  } catch {
+    const stringifyData = JSON.stringify(formValues);
+    localStorage.setItem(LOCALSTORAGE_KEY, stringifyData);
+  }
 }
 
 function setFormFields() {
@@ -27,11 +34,10 @@ function setFormFields() {
     const cachedValues = JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY));
     const { email, message } = cachedValues;
     console.log(email, message);
-    refs.input.value = email;
-    refs.textarea.value = message;
+    refs.input.value = email || '';
+    refs.textarea.value = message || '';
   } catch (e) {
-    refs.input.value = formValues.email;
-    refs.textarea.value = formValues.message;
+    console.log(e.name);
   }
 }
 
