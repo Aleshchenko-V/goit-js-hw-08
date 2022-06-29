@@ -7,7 +7,7 @@ const refs = {
 };
 
 const LOCALSTORAGE_KEY = 'feedback-form-state';
-const formValues = {};
+let formValues = {};
 
 setFormFields();
 refs.form.addEventListener('input', throttle(onInputHandler, 500));
@@ -33,11 +33,13 @@ function setFormFields() {
   try {
     const cachedValues = JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY));
     const { email, message } = cachedValues;
-    console.log(email, message);
+    //console.log(email, message);
     refs.input.value = email || '';
     refs.textarea.value = message || '';
+    formValues = { ...formValues, ...cachedValues };
   } catch (e) {
-    console.log(e.name);
+    //console.log(e.name);
+    console.log('localStorage is empty now!');
   }
 }
 

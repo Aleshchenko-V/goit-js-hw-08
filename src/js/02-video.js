@@ -18,6 +18,6 @@ player.on(
 );
 
 document.addEventListener(
-  'DOMContentLoaded0',
+  'DOMContentLoaded',
   player.setCurrentTime(localStorage.getItem(LOCALSTORAGE_KEY))
 );
